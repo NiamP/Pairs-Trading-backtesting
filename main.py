@@ -155,8 +155,8 @@ profitperc  = (Overallprofit/initial_capital)*100
 if page == 'Trades':
     st.title('Trades Made')
     st.write(Trades_df)
-    st.write(f'Profit: {Overallprofit}')
-    st.write(f'Profit %: {profitperc}')
+    st.write(f'Profit: ${round(Overallprofit,2)}')
+    st.write(f'Profit %: {round(profitperc,2)}%')
     st.write(plt.figure(f'{x} and {y} with Buy/Sell markers'))
 
     

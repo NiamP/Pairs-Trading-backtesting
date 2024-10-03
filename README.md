@@ -1,1 +1,1 @@
-This file contains code that allows the user to run a very simple pairs mean reversion trading strategy, and then backtest this over the last 4 years, I will add more features such as increased stock options or different lenghts of backtesting over time.
+This File contains the code for a pairs mean reversion trading strategy which is then backtested and uploaded to a streamlit web app. Please move the date slider slowly when using the app to prevent streamlit issues!

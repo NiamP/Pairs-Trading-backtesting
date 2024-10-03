@@ -37,46 +37,13 @@ y = st.sidebar.selectbox('Stock 2', ticks,index = 4)
 
 
 Correlation_matrix = d.corr()
-# print(Correlation_matrix)
+
 
 stock1 = d[x]
 stock2 = d[y]
 
 
-#plt.figure('MSFT vs BRK-B')
-#plt.plot(BRKB, label = 'Berkshire Hathaway')
-#plt.plot(MSFT, label = 'Microsoft')
- 
-
-#plt.figure('MSFT-BRKB')
-#plt.plot(BRKB - MSFT)
-#plt.show()
-
-result = ts.coint(stock1, stock2)
-cointegration_t_statistic = result[0]
-p_val = result[1]
-critical_values_test_statistic_at_1_5_10 = result[2]
-
-#print(result) 
-
-#print(cointegration_t_statistic)
-#print(critical_values_test_statistic_at_1_5_10)
-#print(p_val)
-
-#plt.figure('Price ratio')
 ratio = stock1/stock2
-#plt.plot(ratio)
-#plt.axhline(ratio.mean(), color= 'red')
-#plt.show()
-
-
-Spread_ADF = adfuller(stock1-stock2)
-Ratio_ADF = adfuller(stock1/stock2)
-
-# print(BRKB_ADF[1])
-# print(MSFT_ADF[1])
-# print(Spread_ADF[1])
-# print(Ratio_ADF[1])
 
 df_zscore = (ratio-ratio.mean())/ratio.std()
 

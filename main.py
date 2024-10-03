@@ -8,22 +8,33 @@ import statsmodels.tsa.stattools as ts
 from statsmodels.tsa.stattools import adfuller
 import streamlit as st
 
+options = ['Correlation','Trades']
+page = st.sidebar.selectbox('Page',options, index = 0)
+today = datetime.today()
 
-def getdata(ticker):
+startdate = 2000
+
+
+def getdata(ticker,startdate):
     data = pd.DataFrame()
-
-    for i in range(len(ticker)):
-        info = yf.download(ticker[i], '2020-01-01', '2024-01-01')
-        info = info[['Close']].rename(columns={'Close': ticker[i]})
-        data = pd.concat([data, info], axis=1)
+    try:
+        for i in range(len(ticker)):
+            info = yf.download(ticker[i], f'{startdate}-01-01', '2024-01-01')
+            info = info[['Close']].rename(columns={'Close': ticker[i]})
+            data = pd.concat([data, info], axis=1)
+    except:
+        pass
     return data
 
 ticks = ['DPZ', 'AAPL', 'GOOG', 'AMD', 'MSFT','BRK-B']
 
-d = getdata(ticks)
+startdate = st.sidebar.slider("start year of backtest",min_value=1980,max_value=today.year)
+
+d = getdata(ticks, startdate)
 
 x = st.sidebar.selectbox('Stock 1',ticks,index = 5)
 y = st.sidebar.selectbox('Stock 2', ticks,index = 4)
+
 
 Correlation_matrix = d.corr()
 # print(Correlation_matrix)
@@ -58,8 +69,6 @@ ratio = stock1/stock2
 #plt.axhline(ratio.mean(), color= 'red')
 #plt.show()
 
-BRKB_ADF = adfuller(stock1)
-MSFT_ADF = adfuller(stock2)
 
 Spread_ADF = adfuller(stock1-stock2)
 Ratio_ADF = adfuller(stock1/stock2)
@@ -166,8 +175,8 @@ plt.legend()
 plt.xlabel('Date')
 plt.ylabel('Price')
 
-options = ['Correlation','Trades']
-page = st.sidebar.selectbox('Page',options, index = 0)
+
+
 
 if page == 'Correlation':
     st.title("Correlation matrix of stocks in the S&P 500")
@@ -179,6 +188,10 @@ if page == 'Trades':
     st.title('Trades Made')
     st.write(Trades_df)
     st.write(plt.figure(f'{x} and {y} with Buy/Sell markers'))
+    
+
+    
+
 
 
 

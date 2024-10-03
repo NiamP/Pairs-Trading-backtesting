@@ -150,11 +150,15 @@ if page == 'Correlation':
     st.write(Correlation_matrix)
 
 
-
+Overallprofit = capital - initial_capital
+profitperc  = (Overallprofit/initial_capital)*100 
 if page == 'Trades':
     st.title('Trades Made')
     st.write(Trades_df)
+    st.write(f'Profit: {Overallprofit}')
+    st.write(f'Profit %: {profitperc}')
     st.write(plt.figure(f'{x} and {y} with Buy/Sell markers'))
+
     
 
     

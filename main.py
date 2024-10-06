@@ -11,23 +11,26 @@ import streamlit as st
 options = ['Correlation','Trades']
 page = st.sidebar.selectbox('Page',options, index = 0)
 today = datetime.today()
+datadownloaddate = datetime.today().strftime('%Y-%m-%d')
 
 startdate = 2000
 
-
+# Create a function to retrieve data for given ticker
 def getdata(ticker,startdate):
     data = pd.DataFrame()
     try:
         for i in range(len(ticker)):
-            info = yf.download(ticker[i], f'{startdate}-01-01', '2024-01-01')
+            info = yf.download(ticker[i], f'{startdate}-01-01', f'{datadownloaddate}')
             info = info[['Close']].rename(columns={'Close': ticker[i]})
             data = pd.concat([data, info], axis=1)
     except:
         pass
     return data
 
+# List of tickers (will make this longer in the future)
 ticks = ['DPZ', 'AAPL', 'GOOG', 'AMD', 'MSFT','BRK-B']
 
+#Allow ths user to select a start date for the trading strategy
 startdate = st.sidebar.slider("start year of backtest",min_value=1980,max_value=today.year)
 
 d = getdata(ticks, startdate)
@@ -35,18 +38,21 @@ d = getdata(ticks, startdate)
 x = st.sidebar.selectbox('Stock 1',ticks,index = 5)
 y = st.sidebar.selectbox('Stock 2', ticks,index = 4)
 
-
+#Create a correlation matrix between the stocks to help visualise which pairs are useful to trade together
 Correlation_matrix = d.corr()
 
 
 stock1 = d[x]
 stock2 = d[y]
 
+#Calculate the Z-score for the ratio of the two stocks
+
 
 ratio = stock1/stock2
-
+    
 df_zscore = (ratio-ratio.mean())/ratio.std()
 
+# Set initial statistics
 initial_capital = 1000
 position = None
 capital = initial_capital
@@ -57,7 +63,7 @@ size_1 = 0
 
 trades = []
 
-
+# Check Z Z scores to see if the value exeeds +/- 1.5, if so execute a trade
 for i in range(len(df_zscore)):
     if df_zscore[i] >= 1.5 and position is None:
         entry_price_1 = stock1[i]
@@ -77,6 +83,8 @@ for i in range(len(df_zscore)):
         size_1 = (initial_capital/2)/stock1[i]
         size_2 = (initial_capital/2)/stock2[i]
 
+        
+    # If the Z score returns to within +- 0.5 we assume the two stocks have returned to steady state so we exit out of the trade 
     elif -0.5 <= df_zscore[i] <= 0.5 and position is not None:
         exit_price_1 = stock1[i]
         exit_price_2 = stock2[i]
@@ -112,12 +120,13 @@ for i in range(len(df_zscore)):
 
         position = None
 
+#Convert our trades data into a pandas dataframe
 Trades_df = pd.DataFrame(trades)
 
 print(Trades_df)
 print(capital)
 
-        
+# Create a graph showing entries and exits for our strategy
 plt.figure(f'{x} and {y} with Buy/Sell markers')
 plt.plot(stock1, color = 'blue')
 plt.plot(stock2, color = 'orange')
@@ -142,8 +151,7 @@ plt.legend()
 plt.xlabel('Date')
 plt.ylabel('Price')
 
-
-
+# Create Streamlit Pages Containing the correlation matrix and the graph and trades information
 
 if page == 'Correlation':
     st.title("Correlation matrix of stocks in the S&P 500")
@@ -152,6 +160,7 @@ if page == 'Correlation':
 
 Overallprofit = capital - initial_capital
 profitperc  = (Overallprofit/initial_capital)*100 
+
 if page == 'Trades':
     st.title('Trades Made')
     st.write(Trades_df)

@@ -1,10 +1,8 @@
 import numpy as np 
 import pandas as pd
-import pandas_datareader as pdr
 import yfinance as yf 
 from datetime import datetime
 import matplotlib.pyplot as plt
-import statsmodels.tsa.stattools as ts
 from statsmodels.tsa.stattools import adfuller
 import streamlit as st
 
@@ -28,7 +26,7 @@ def getdata(ticker,startdate):
     return data
 
 # List of tickers (will make this longer in the future)
-ticks = ['AAPL','NVDA','MSFT','GOOG','AMZN','2222.SR','META','BRK-B','TSM','LLY']
+ticks = ['DPZ', 'AAPL', 'GOOG', 'AMD', 'MSFT','BRK-B']
 
 #Allow ths user to select a start date for the trading strategy
 startdate = st.sidebar.slider("start year of backtest",min_value=1980,max_value=today.year)
@@ -141,7 +139,7 @@ for index, trade in Trades_df.iterrows():
         plt.scatter(exit_date, trade[f'Exit {x}'], color = 'green', marker = '^', s = 100)
         plt.scatter(exit_date, trade[f'Exit {y}'], color = 'red', marker = '^', s = 100)
 
-    elif f'long BRKB short MSFT' in trade['Position']:
+    if f'long {x} short {y}' in trade['Position']:
         plt.scatter(entry_date, trade[f'Entry {x}'], color = 'green', marker = '^', s = 100)
         plt.scatter(entry_date, trade[f'Entry {y}'], color = 'red', marker = '^', s = 100)
         plt.scatter(exit_date, trade[f'Exit {x}'], color = 'red', marker = '^', s = 100)

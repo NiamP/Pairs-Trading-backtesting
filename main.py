@@ -28,7 +28,7 @@ def getdata(ticker,startdate):
     return data
 
 # List of tickers (will make this longer in the future)
-ticks = ['DPZ', 'AAPL', 'GOOG', 'AMD', 'MSFT','BRK-B']
+ticks = ['AAPL','NVDA','MSFT','GOOG','AMZN','2222.SR','META','BRK-B','TSM','LLY]
 
 #Allow ths user to select a start date for the trading strategy
 startdate = st.sidebar.slider("start year of backtest",min_value=1980,max_value=today.year)
